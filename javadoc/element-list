@@ -1,5 +1,4 @@
 com.alipay.sofa.common.log.factory
-com.baidu.bjf.remoting.protobuf.utils.compiler
 com.iohao.game.action.skeleton
 com.iohao.game.action.skeleton.annotation
 com.iohao.game.action.skeleton.core
