@@ -63,6 +63,7 @@ com.iohao.game.common.kit.beans.property
 com.iohao.game.common.kit.collect
 com.iohao.game.common.kit.concurrent
 com.iohao.game.common.kit.concurrent.executor
+com.iohao.game.common.kit.exception
 com.iohao.game.common.kit.hutool
 com.iohao.game.common.kit.id
 com.iohao.game.common.kit.io
