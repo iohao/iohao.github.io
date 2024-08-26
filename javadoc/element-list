@@ -29,7 +29,6 @@ com.iohao.game.action.skeleton.pulse.message
 com.iohao.game.action.skeleton.pulse.runner
 com.iohao.game.action.skeleton.toy
 com.iohao.game.bolt.broker.client
-com.iohao.game.bolt.broker.client.action.skeleton
 com.iohao.game.bolt.broker.client.kit
 com.iohao.game.bolt.broker.client.processor
 com.iohao.game.bolt.broker.client.processor.connection
@@ -57,6 +56,7 @@ com.iohao.game.bolt.broker.server.service
 com.iohao.game.common.consts
 com.iohao.game.common.internal
 com.iohao.game.common.kit
+com.iohao.game.common.kit.adapter
 com.iohao.game.common.kit.asm
 com.iohao.game.common.kit.attr
 com.iohao.game.common.kit.beans.property
@@ -64,7 +64,6 @@ com.iohao.game.common.kit.collect
 com.iohao.game.common.kit.concurrent
 com.iohao.game.common.kit.concurrent.executor
 com.iohao.game.common.kit.exception
-com.iohao.game.common.kit.hutool
 com.iohao.game.common.kit.id
 com.iohao.game.common.kit.io
 com.iohao.game.common.kit.micro.room
