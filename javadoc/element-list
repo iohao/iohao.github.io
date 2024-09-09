@@ -63,11 +63,13 @@ com.iohao.game.common.kit.beans.property
 com.iohao.game.common.kit.collect
 com.iohao.game.common.kit.concurrent
 com.iohao.game.common.kit.concurrent.executor
+com.iohao.game.common.kit.concurrent.timer.delay
 com.iohao.game.common.kit.exception
 com.iohao.game.common.kit.id
 com.iohao.game.common.kit.io
 com.iohao.game.common.kit.micro.room
 com.iohao.game.common.kit.system
+com.iohao.game.common.kit.time
 com.iohao.game.common.kit.trace
 com.iohao.game.common.kit.weight
 com.iohao.game.common.validation
@@ -120,11 +122,7 @@ com.iohao.game.widget.light.domain.event.message
 com.iohao.game.widget.light.profile
 com.iohao.game.widget.light.protobuf
 com.iohao.game.widget.light.protobuf.kit
-com.iohao.game.widget.light.redis.lock
-com.iohao.game.widget.light.redis.lock.spring.service.config
-com.iohao.game.widget.light.redis.lock.spring.service.service
 com.iohao.game.widget.light.room
 com.iohao.game.widget.light.room.domain
 com.iohao.game.widget.light.room.flow
 com.iohao.game.widget.light.room.operation
-com.iohao.game.widget.light.timer.task
