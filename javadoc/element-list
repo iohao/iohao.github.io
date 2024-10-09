@@ -15,6 +15,7 @@ com.iohao.game.action.skeleton.core.flow.parser
 com.iohao.game.action.skeleton.core.runner
 com.iohao.game.action.skeleton.eventbus
 com.iohao.game.action.skeleton.ext.spring
+com.iohao.game.action.skeleton.i18n
 com.iohao.game.action.skeleton.kit
 com.iohao.game.action.skeleton.protocol
 com.iohao.game.action.skeleton.protocol.collect
