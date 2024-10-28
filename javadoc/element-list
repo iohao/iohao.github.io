@@ -20,6 +20,7 @@ com.iohao.game.action.skeleton.kit
 com.iohao.game.action.skeleton.protocol
 com.iohao.game.action.skeleton.protocol.collect
 com.iohao.game.action.skeleton.protocol.external
+com.iohao.game.action.skeleton.protocol.login
 com.iohao.game.action.skeleton.protocol.processor
 com.iohao.game.action.skeleton.protocol.wrapper
 com.iohao.game.action.skeleton.pulse
