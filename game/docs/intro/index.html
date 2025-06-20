@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.8.1">
 <title data-rh="true">简单介绍 | ioGame documentation</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://iohao.github.io/game/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://iohao.github.io/game/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://iohao.github.io/game/docs/intro"><meta data-rh="true" property="og:locale" content="zh"><meta data-rh="true" property="og:locale:alternate" content="en"><meta data-rh="true" name="docusaurus_locale" content="zh"><meta data-rh="true" name="docsearch:language" content="zh"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="简单介绍 | ioGame documentation"><meta data-rh="true" name="description" content="愿景"><meta data-rh="true" property="og:description" content="愿景"><link data-rh="true" rel="icon" href="/game/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://iohao.github.io/game/docs/intro"><link data-rh="true" rel="alternate" href="https://iohao.github.io/game/en/docs/intro" hreflang="en"><link data-rh="true" rel="alternate" href="https://iohao.github.io/game/docs/intro" hreflang="zh"><link data-rh="true" rel="alternate" href="https://iohao.github.io/game/docs/intro" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"简单介绍","item":"https://iohao.github.io/game/docs/intro"}]}</script><link rel="stylesheet" href="/game/assets/css/styles.c1ac5bae.css">
-<script src="/game/assets/js/runtime~main.9aaea655.js" defer="defer"></script>
-<script src="/game/assets/js/main.d6d45113.js" defer="defer"></script>
+<script src="/game/assets/js/runtime~main.ffe3a80f.js" defer="defer"></script>
+<script src="/game/assets/js/main.e659a1ab.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
@@ -253,7 +253,8 @@ action 支持自动装箱、拆箱基础类型，用于解决协议碎片的问�
 <ol>
 <li>帮助客户端开发者减少巨大的工作量，<strong>不需要编写大量的模板代码</strong>。</li>
 <li><strong>语义明确，清晰</strong>。生成的交互代码即能明确所需要的参数类型，又能明确服务器是否会有返回值。这些会在生成接口时就提前明确好。</li>
-<li>由于我们可以做到明确交互接口，进而可以明确参数类型。这使得<strong>接口方法参数类型安全、明确</strong>，从而有效避免安全隐患，从而<strong>减少联调时的低级错误</strong>。</li>
+<li>明确的交互接口，确保了方法的<strong>参数类型安全且明确</strong>，使我们<strong>在编译阶段</strong>就能发现潜在问题。
+这种做法有效避免了安全隐患，并减少了联调时可能出现的低级错误。</li>
 <li>减少服务器与客户端双方对接时的沟通成本，代码即文档。生成的联调代码中有文档与使用示例，方法上的示例会教你如何使用，即使是新手也能做到<strong>零学习成本</strong>。</li>
 <li>帮助客户端开发者屏蔽与服务器交互部分，<strong>将更多的精力放在真正的业务上</strong>。</li>
 <li>为双方联调减少心智负担。联调代码使用简单，<strong>与本地方法调用一般丝滑</strong>。</li>
