@@ -106,6 +106,7 @@ com.iohao.game.external.core.micro
 com.iohao.game.external.core.micro.join
 com.iohao.game.external.core.netty
 com.iohao.game.external.core.netty.handler
+com.iohao.game.external.core.netty.handler.check
 com.iohao.game.external.core.netty.handler.codec
 com.iohao.game.external.core.netty.handler.ws
 com.iohao.game.external.core.netty.hook
