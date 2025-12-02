@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkionet_doc=self.webpackChunkionet_doc||[]).push([[7472],{5513:e=>{e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"README","permalink":"/ionet/en/blog/README","unlisted":false,"date":"2025-12-02T03:03:38.000Z"}]}')}}]);

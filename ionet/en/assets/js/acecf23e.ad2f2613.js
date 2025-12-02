@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkionet_doc=self.webpackChunkionet_doc||[]).push([[1903],{1912:e=>{e.exports=JSON.parse('{"blogBasePath":"/ionet/en/blog","blogTitle":"Blog","authorsListPath":"/ionet/en/blog/authors"}')}}]);

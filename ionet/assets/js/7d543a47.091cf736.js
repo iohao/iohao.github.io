@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkionet_doc=self.webpackChunkionet_doc||[]).push([[9966],{2180:e=>{e.exports=JSON.parse('{"metadata":{"permalink":"/ionet/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
