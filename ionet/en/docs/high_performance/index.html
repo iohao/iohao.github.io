@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">为什么快 | ionet documentation</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://iohao.github.io/ionet/en/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://iohao.github.io/ionet/en/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://iohao.github.io/ionet/en/docs/high_performance"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" property="og:locale:alternate" content="zh"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="为什么快 | ionet documentation"><meta data-rh="true" name="description" content="介绍"><meta data-rh="true" property="og:description" content="介绍"><link data-rh="true" rel="icon" href="/ionet/en/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://iohao.github.io/ionet/en/docs/high_performance"><link data-rh="true" rel="alternate" href="https://iohao.github.io/ionet/en/docs/high_performance" hreflang="en"><link data-rh="true" rel="alternate" href="https://iohao.github.io/ionet/docs/high_performance" hreflang="zh"><link data-rh="true" rel="alternate" href="https://iohao.github.io/ionet/docs/high_performance" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"为什么快","item":"https://iohao.github.io/ionet/en/docs/high_performance"}]}</script><link rel="stylesheet" href="/ionet/en/assets/css/styles.28759a50.css">
-<script src="/ionet/en/assets/js/runtime~main.fd3a138d.js" defer="defer"></script>
-<script src="/ionet/en/assets/js/main.ec92789e.js" defer="defer"></script>
+<script src="/ionet/en/assets/js/runtime~main.0fe83eb4.js" defer="defer"></script>
+<script src="/ionet/en/assets/js/main.f370bc4a.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -19,7 +19,7 @@
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="IPC">共享内存 (Aeron IPC)<a href="#IPC" class="hash-link" aria-label="Direct link to 共享内存 (Aeron IPC)" title="Direct link to 共享内存 (Aeron IPC)" translate="no">​</a></h2>
 <p>Aeron 独特的 IPC 机制，基于<strong>共享内存 (Shared Memory)</strong> 和无锁设计，这从根本上消除了数据在不同进程间传输时产生的拷贝和上下文切换开销。</p>
 <p><strong>Aeron IPC 与 Netty Zero-Copy 的区别</strong></p>
-<table><thead><tr><th style="text-align:left">特性</th><th style="text-align:left">Netty 系统级零拷贝</th><th style="text-align:left">Aeron 应用级零拷贝 (IPC)</th></tr></thead><tbody><tr><td style="text-align:left">传输介质</td><td style="text-align:left">内核缓冲区、网络协议栈</td><td style="text-align:left">共享内存文件 (Mapped Files)</td></tr><tr><td style="text-align:left">数据流转</td><td style="text-align:left">减少用户空间到内核空间的复制，但仍涉及<strong>内核网络栈</strong>。</td><td style="text-align:left"><strong>完全绕过内核、网络协议栈</strong>和用户空间之间的复制。</td></tr><tr><td style="text-align:left">零拷贝定义</td><td style="text-align:left">减少系统调用过程中的 CPU 复制。</td><td style="text-align:left"><strong>跨进程、完全消除</strong>数据拷贝。</td></tr></tbody></table>
+<table><thead><tr><th style="text-align:left">特性</th><th style="text-align:left">Netty 系统级零拷贝</th><th style="text-align:left">Aeron 应用级零拷贝 (IPC)</th></tr></thead><tbody><tr><td style="text-align:left">传输介质</td><td style="text-align:left">内核缓冲区、网络协议栈</td><td style="text-align:left">共享内存文件 (Mapped Files)</td></tr><tr><td style="text-align:left">数据流转</td><td style="text-align:left">减少用户空间到内核空间的复制，但仍涉及<strong>内核网络栈</strong>。</td><td style="text-align:left"><strong>完全绕过内核、网络协议栈</strong>和用户空间之间的复制。</td></tr><tr><td style="text-align:left">零拷贝定义</td><td style="text-align:left">减少系统调用过程中的 CPU 复制。</td><td style="text-align:left"><strong>跨进程、完全消除数据拷贝</strong>。</td></tr></tbody></table>
 <hr>
 <p>Aeron 会在底层开辟一块内存区域（Log Buffer），让不同进程同时指向这块内存。
 通过让多个进程<strong>映射同一块内存</strong>，数据在进程间传递时不需要经过内核、网络堆栈或用户空间之间的任何复制。这是一种<strong>更彻底、更高维度</strong>的零拷贝。</p>
@@ -27,41 +27,42 @@
 这块内存是可复用的<strong>循环缓冲区（由 Term Buffers 构成）</strong>，以避免 GC。<strong>内存复用</strong>是 Aeron 高性能的关键所在。</p>
 <p><img decoding="async" loading="lazy" alt="performance_zero" src="/ionet/en/assets/images/performance_zero-6f0b2f26e8e814e45974e1f52ba29a19.svg" width="1417" height="722" class="img_ev3q"></p>
 <p>循环缓冲区完全避免了在数据传输过程中频繁地分配和释放内存，从而极大地减少了 JVM 的<strong>垃圾回收（GC）压力和停顿</strong>，保证了极低的延迟。</p>
-<p><strong>这样设计的优点是：</strong></p>
+<p>这样设计的优点是：</p>
 <ol>
-<li class=""><strong>延迟方面：</strong> 极低。避免了网络协议栈和上下文切换的开销，通常在 <strong>纳秒/微秒</strong> 级别。</li>
-<li class=""><strong>传输方式：</strong> 由于多个进程映射同一块内存，数据在进程间传递时实现<strong>零拷贝传输</strong>。</li>
-<li class=""><strong>开销方面：</strong> 从根本上消除了数据在不同进程间传输时产生的<strong>数据拷贝和上下文切换开销</strong>。</li>
+<li class="">延迟方面: 极低。避免了网络协议栈和上下文切换的开销，通常在 <strong>纳秒/微秒</strong> 级别。</li>
+<li class="">传输方式: 由于多个进程映射同一块内存，数据在进程间传递时实现<strong>零拷贝传输</strong>。</li>
+<li class="">开销方面: 从根本上消除了数据在不同进程间传输时产生的<strong>数据拷贝和上下文切换开销</strong>。</li>
 </ol>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="sbe-simple-binary-encoding">SBE (Simple Binary Encoding)<a href="#sbe-simple-binary-encoding" class="hash-link" aria-label="Direct link to SBE (Simple Binary Encoding)" title="Direct link to SBE (Simple Binary Encoding)" translate="no">​</a></h2>
-<p>Aeron 和 SBE 常常是搭配使用的“<strong>最佳组合</strong>”，它们共同为高吞吐量、低延迟的应用提供了<strong>端到端</strong>的最优解决方案。</p>
+<p>Aeron 和 SBE 常常是搭配使用的“最佳组合”，它们共同为高吞吐量、低延迟的应用提供了端到端的最优解决方案。</p>
 <p>SBE 是一个用于高性能金融和交易应用的消息编码/解码标准，它的核心目标是在实现极低延迟的同时，达到<strong>极致的 CPU 效率</strong>。
 SBE 的设计完全是为了<strong>机器效率</strong>，而非人类可读性。它摒弃了 XML、JSON 或 Google Protobuf/Thrift 等常见的编码格式中存在的“不必要”开销。</p>
-<p><strong>特点：</strong></p>
+<br>
+<p>特点：</p>
 <ol>
-<li class=""><strong>极致的 CPU 效率：</strong> SBE 的编码和解码过程几乎是<strong>零 CPU 开销</strong>。它采用被称为 <strong>“在位编解码 (On-the-wire Encoding/Decoding)”</strong> 的机制。</li>
-<li class=""><strong>固定内存布局：</strong> 字段大小固定，整个消息的结构和字段的内存偏移量在编译时已确定，<strong>编解码开销几乎为零</strong>。</li>
-<li class=""><strong>零 GC：</strong> 内存开销极小，<strong>无临时对象</strong>，完全避免在编解码过程中产生新的 Java 对象。</li>
+<li class="">极致的 CPU 效率: SBE 的编码和解码过程几乎是<strong>零 CPU 开销</strong>。它采用被称为 “在位编解码 (On-the-wire Encoding/Decoding)” 的机制。</li>
+<li class="">固定内存布局: 字段大小固定，整个消息的结构和字段的内存偏移量在编译时已确定，<strong>编解码开销几乎为零</strong>。</li>
+<li class="">零 GC: 内存开销极小，<strong>无临时对象</strong>，完全避免在编解码过程中产生新的 Java 对象。</li>
 </ol>
 <p>SBE 性能极快，编解码延迟处于<strong>纳秒级</strong>。得益于其固定内存布局，性能通常是 Google Protobuf 等基于运行时解析的框架的数倍。在单核上，SBE 每秒可轻松处理<strong>数千万条消息</strong>，展示了其极致的 CPU 效率。</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="time">时间换算与延迟性能指标<a href="#time" class="hash-link" aria-label="Direct link to 时间换算与延迟性能指标" title="Direct link to 时间换算与延迟性能指标" translate="no">​</a></h2>
-<p>为了清晰衡量性能，我们首先回顾时间单位：</p>
+<p>为了清晰的衡量性能，我们首先回顾时间单位</p>
 <table><thead><tr><th style="text-align:left">单位</th><th style="text-align:left">关系</th><th style="text-align:left">描述</th><th style="text-align:left">换算</th></tr></thead><tbody><tr><td style="text-align:left">纳秒 (ns)</td><td style="text-align:left">10<sup>-9</sup> 秒</td><td style="text-align:left">十亿分之一秒</td><td style="text-align:left">1秒 (s) = 1,000,000,000 纳秒 (ns)</td></tr><tr><td style="text-align:left">微秒 (us)</td><td style="text-align:left">10<sup>-6</sup> 秒</td><td style="text-align:left">百万分之一秒</td><td style="text-align:left">1微秒 (us) = 1,000 纳秒 (ns)</td></tr><tr><td style="text-align:left">毫秒 (ms)</td><td style="text-align:left">10<sup>-3</sup> 秒</td><td style="text-align:left">千分之一秒</td><td style="text-align:left">1毫秒 (ms) = 1,000 微秒 (us)</td></tr><tr><td style="text-align:left">秒 (s)</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">1秒 (s) = 1,000 毫秒 (ms)</td></tr></tbody></table>
 <br>
 <p><strong>Aeron 延迟性能指标</strong></p>
 <ol>
 <li class="">
-<p><strong>进程内/间通信 (IPC):</strong></p>
+<p>进程内/间通信 (IPC):</p>
 <ul>
-<li class=""><strong>延迟：</strong> 纳秒级延迟（~100 ns 级别）。</li>
-<li class=""><strong>机制：</strong> 通过<strong>无锁、基于共享内存</strong>的环形缓冲区实现，彻底避免了内核态切换和锁竞争，这是达到极低延迟的关键。</li>
+<li class="">延迟: <strong>纳秒级</strong>延迟（~100 ns 级别）。</li>
+<li class="">机制: 通过无锁、基于共享内存的环形缓冲区实现，彻底避免了内核态切换和锁竞争，这是达到极低延迟的关键。</li>
 </ul>
 </li>
 <li class="">
-<p><strong>局域网通信 (UDP):</strong></p>
+<p>局域网通信 (UDP):</p>
 <ul>
-<li class=""><strong>延迟：</strong> 微秒级延迟（~10 - 30 us 级别）。</li>
-<li class=""><strong>机制：</strong> 使用<strong>应用层</strong>优化的 UDP 协议，提供可靠性和有序性，显著优于传统内核 TCP/IP 协议栈。</li>
+<li class="">延迟: <strong>微秒级</strong>延迟（~10 - 30 us 级别）。</li>
+<li class="">机制: 使用应用层优化的 UDP 协议，提供可靠性和有序性，显著优于传统内核 TCP/IP 协议栈。</li>
 </ul>
 </li>
 </ol>
@@ -71,11 +72,11 @@ SBE 的设计完全是为了<strong>机器效率</strong>，而非人类可读�
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="UDP-TCP/IP">Aeron UDP 与传统 TCP/IP 的关键差异<a href="#UDP-TCP/IP" class="hash-link" aria-label="Direct link to Aeron UDP 与传统 TCP/IP 的关键差异" title="Direct link to Aeron UDP 与传统 TCP/IP 的关键差异" translate="no">​</a></h2>
 <p>Aeron UDP 协议与传统内核 TCP 协议的设计哲学完全不同</p>
 <ul>
-<li class=""><strong>传统 TCP/IP</strong> 旨在提供一个<strong>通用、可靠、公平</strong>的广域网传输层，但以牺牲延迟的<strong>稳定性</strong>和<strong>可预测性</strong>为代价。</li>
-<li class=""><strong>Aeron</strong> 则是一个<strong>专注于低延迟、高吞吐、延迟可预测</strong>的<strong>消息流</strong>传输框架。它将复杂的传输逻辑移动到应用层，并通过<strong>共享内存 (IPC)</strong> 和<strong>优化后的 UDP</strong> (应用层可靠性) 绕过了内核 TCP/IP 栈的性能瓶颈。</li>
-<li class=""><strong>使用 Aeron，开发者获得了对延迟和传输行为的精细控制，从而实现极低且高度可预测的通信延迟。</strong></li>
+<li class="">传统 TCP/IP 旨在提供一个通用、可靠、公平的广域网传输层，但以牺牲延迟的稳定性和可预测性为代价。</li>
+<li class="">Aeron 则是一个专注于低延迟、高吞吐、延迟可预测的消息流传输框架。它将复杂的传输逻辑移动到应用层，并通过共享内存 (IPC) 和优化后的 UDP (应用层可靠性) 绕过了内核 TCP/IP 栈的性能瓶颈。</li>
+<li class="">使用 Aeron，开发者获得了对延迟和传输行为的精细控制，从而实现极低且高度可预测的通信延迟。</li>
 </ul>
-<table><thead><tr><th style="text-align:left">特性</th><th style="text-align:left">Aeron (UDP/应用层)</th><th style="text-align:left">传统 TCP/IP (内核/传输层)</th></tr></thead><tbody><tr><td style="text-align:left"><strong>可靠性机制</strong></td><td style="text-align:left"><strong>NACK</strong> 机制：只有接收方发现缺失时才请求重传。<strong>效率高，流量小。</strong></td><td style="text-align:left"><strong>ACK</strong> 机制：发送方需等待确认，<strong>增加延迟和网络流量。</strong></td></tr><tr><td style="text-align:left"><strong>有序性保障</strong></td><td style="text-align:left"><strong>应用层</strong>处理：乱序接收，在接收端日志中进行有序重组。</td><td style="text-align:left"><strong>内核层</strong>保证：所有数据包必须顺序交付。</td></tr><tr><td style="text-align:left"><strong>HoL 阻塞</strong></td><td style="text-align:left"><strong>消除 (No Head-of-Line Blocking)。</strong> 即使有丢包，后续数据仍可被接收和缓冲，不影响处理流水线。</td><td style="text-align:left"><strong>存在 (TCP)。</strong> 丢包会导致后续所有数据包停滞在内核缓冲区，等待重传完成，<strong>显著增加 P99 延迟。</strong></td></tr><tr><td style="text-align:left"><strong>背压/流控</strong></td><td style="text-align:left"><strong>应用层流控</strong> (如 Term Offset/Position)，快速且细粒度，反应迅速。</td><td style="text-align:left"><strong>内核滑动窗口/流控</strong>，受限于操作系统调度，反应相对滞后。</td></tr></tbody></table>
+<table><thead><tr><th style="text-align:left">特性</th><th style="text-align:left">Aeron (UDP/应用层)</th><th style="text-align:left">传统 TCP/IP (内核/传输层)</th></tr></thead><tbody><tr><td style="text-align:left">可靠性机制</td><td style="text-align:left">NACK 机制: 只有接收方发现缺失时才请求重传。<strong>效率高，流量小。</strong></td><td style="text-align:left">ACK 机制: 发送方需等待确认，<strong>增加延迟和网络流量。</strong></td></tr><tr><td style="text-align:left">有序性保障</td><td style="text-align:left">应用层处理: 乱序接收，在接收端日志中进行有序重组。</td><td style="text-align:left">内核层保证: 所有数据包必须顺序交付。</td></tr><tr><td style="text-align:left">HoL 阻塞</td><td style="text-align:left">消除 (No Head-of-Line Blocking)。 即使有丢包，后续数据仍可被接收和缓冲，不影响处理流水线。</td><td style="text-align:left">存在 (TCP)。 丢包会导致后续所有数据包停滞在内核缓冲区，等待重传完成，<strong>显著增加 P99 延迟。</strong></td></tr><tr><td style="text-align:left">背压/流控</td><td style="text-align:left">应用层流控 (如 Term Offset/Position)，快速且细粒度，反应迅速。</td><td style="text-align:left">内核滑动窗口/流控受限于操作系统调度，<strong>反应相对滞后</strong>。</td></tr></tbody></table>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="summary">小结<a href="#summary" class="hash-link" aria-label="Direct link to 小结" title="Direct link to 小结" translate="no">​</a></h2>
 <p>网络编程性能的两个关键点分别是<strong>数据传输</strong>和<strong>编解码</strong>。得益于 Aeron 和 SBE 组合，我们解决了这两个关键瓶颈：</p>
 <ol>
@@ -88,6 +89,6 @@ SBE 的设计完全是为了<strong>机器效率</strong>，而非人类可读�
 <li class="">SBE = 极致的 CPU 效率，它让消息处理的速度达到硬件极限。</li>
 <li class="">Aeron + SBE = 端到端的性能保障。</li>
 <li class="">零 GC / 零拷贝: SBE 直接在缓冲区操作，Aeron 在共享内存中传输，共同实现了高性能应用梦寐以求的<strong>零内存复制</strong>和<strong>零垃圾回收</strong>的目标。</li>
-</ul></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col noPrint_WFHX"><a class="theme-edit-this-page" href="/ionet/en/docs/high_performance.mdx"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_JAkA"><span class="theme-last-updated">Last updated<!-- --> on <b><time datetime="2025-11-14T13:31:08.000Z" itemprop="dateModified">Nov 14, 2025</time></b></span></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/ionet/en/docs/intro"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">简单介绍</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/ionet/en/docs/installation"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">安装</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#Intro" class="table-of-contents__link toc-highlight">介绍</a></li><li><a href="#IPC" class="table-of-contents__link toc-highlight">共享内存 (Aeron IPC)</a></li><li><a href="#sbe-simple-binary-encoding" class="table-of-contents__link toc-highlight">SBE (Simple Binary Encoding)</a></li><li><a href="#time" class="table-of-contents__link toc-highlight">时间换算与延迟性能指标</a></li><li><a href="#UDP-TCP/IP" class="table-of-contents__link toc-highlight">Aeron UDP 与传统 TCP/IP 的关键差异</a></li><li><a href="#summary" class="table-of-contents__link toc-highlight">小结</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/ionet/en/docs/intro">Tutorial</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/iohao/ionet/issues" target="_blank" rel="noopener noreferrer" class="footer__link-item">Github Issues<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/iohao/ionet" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2025 ioGame, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</ul></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col noPrint_WFHX"><a class="theme-edit-this-page" href="/ionet/en/docs/high_performance.mdx"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_JAkA"><span class="theme-last-updated">Last updated<!-- --> on <b><time datetime="2025-12-11T08:13:14.000Z" itemprop="dateModified">Dec 11, 2025</time></b></span></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/ionet/en/docs/intro"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">简单介绍</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/ionet/en/docs/installation"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">安装</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#Intro" class="table-of-contents__link toc-highlight">介绍</a></li><li><a href="#IPC" class="table-of-contents__link toc-highlight">共享内存 (Aeron IPC)</a></li><li><a href="#sbe-simple-binary-encoding" class="table-of-contents__link toc-highlight">SBE (Simple Binary Encoding)</a></li><li><a href="#time" class="table-of-contents__link toc-highlight">时间换算与延迟性能指标</a></li><li><a href="#UDP-TCP/IP" class="table-of-contents__link toc-highlight">Aeron UDP 与传统 TCP/IP 的关键差异</a></li><li><a href="#summary" class="table-of-contents__link toc-highlight">小结</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/ionet/en/docs/intro">Tutorial</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/iohao/ionet/issues" target="_blank" rel="noopener noreferrer" class="footer__link-item">Github Issues<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/iohao/ionet" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2025 ioGame, Inc. Built with Docusaurus.</div></div></div></footer></div>
 </body>
 </html>
