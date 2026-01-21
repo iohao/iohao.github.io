@@ -1,0 +1,528 @@
+# ionet - High-Performance Java Distributed Network Framework
+
+## Overview
+
+ionet is an open-source, lightweight, high-performance distributed network programming framework written in Java.
+
+**Key Features:**
+- **Extreme Performance**: Based on Aeron + SBE, achieving nanosecond-level end-to-end latency, true zero-copy, zero GC
+- **Lightweight**: Lock-free async, event-driven architecture, ~15MB package size, startup in 0.x seconds
+- **Zero Learning Cost**: MVC-like coding style, plain Java methods as business Actions
+- **Multi-Protocol Support**: TCP, WebSocket, UDP simultaneously, no business code changes needed
+- **Write Once, Run Anywhere**: Generate client code for Godot, UE, Unity, CocosCreator, Laya, React, Vue, etc.
+
+**Use Cases:**
+- Game server
+- IoT
+- High-frequency market data push
+- Real-time gaming systems
+- High-frequency financial trading
+- Any service communication with extreme latency requirements
+
+**Requirements:**
+- JDK 25+
+- Maven 3.9+
+
+---
+
+## Project Structure
+
+### Source Modules
+
+| Module | Path | Description |
+|--------|------|-------------|
+| **common-kit** | `common-kit` | Common utilities, logging, network basics |
+| **core-framework** | `core-framework` | Core business framework, Action mechanism, communication models, protocol definitions |
+| **net-common** | `net-common` | Network common module, SBE codec |
+| **net-server** | `net-server` | Server core, manages External/Logic Server |
+| **net-logic-server** | `net-logic-server` | Logic server module, business logic layer |
+| **net-center** | `net-center` | Center server, service registration, discovery, load balancing |
+| **external-core** | `external-core` | External service core abstraction, TCP/WebSocket/UDP support |
+| **external-netty** | `external-netty` | Netty implementation of external services |
+| **run-one** | `run-one` | Single-process multi-service launcher, simplifies development and debugging |
+| **extension-spring** | `extension-spring` | Spring integration support |
+| **extension-domain-event** | `extension-domain-event` | Domain event extension, distributed event bus |
+| **extension-room** | `extension-room` | Room/game table extension module |
+| **extension-client** | `extension-client` | Client SDK code generation support |
+| **extension-codegen** | `extension-codegen` | Multi-language documentation code generation (C#/TypeScript/GDScript) |
+| **extension-jprotobuf** | `extension-jprotobuf` | JProtobuf protocol support |
+
+### Core Classes and Interfaces
+
+**Entry Points:**
+- `RunOne` - Single-process multi-service launcher
+- `NetServerBuilder` - Server builder
+
+**Server Definitions:**
+- `NetServer` - Network server interface
+- `LogicServer` - Logic server interface
+- `ExternalServer` - External service interface
+
+**Business Framework Core:**
+- `@ActionController` - Business controller annotation
+- `@ActionMethod` - Business method annotation
+- `BarSkeleton` - Skeleton builder
+- `FlowContext` - Request flow context
+
+**Communication Models:**
+- `Communication` - Unified communication interface
+- `EventBus` - Distributed event bus
+
+---
+
+## Example Projects
+
+### ionet-examples Modules
+
+| Module | Description |
+|--------|-------------|
+| **ionet-quick-demo** | Quick start server example from scratch |
+| **ionet-cookbook-code** | All feature examples from documentation (Cookbook) |
+| **ionet-spring-example** | Spring integration |
+| **ionet-sdk-example** | ioGame SDK (C#/TS) integration demo |
+
+### ionet-cookbook-code Sub-modules
+
+| Sub-module | Purpose |
+|------------|---------|
+| **common-data** | Common data module |
+| **example-ws-token** | WebSocket Token authentication example |
+| **external** | External service module (access control) |
+| **gm** | GM tool functionality |
+| **logic-hall** | Hall logic server |
+| **logic-internal** | Internal logic server |
+| **logic-room** | Room logic server |
+| **one-application** | One-click startup (all services integrated) |
+| **one-client** | Simulated client |
+
+---
+
+## Installation
+
+### Maven Dependency
+
+```xml
+<properties>
+    <ionet.version>xx.xx</ionet.version> <!-- See https://central.sonatype.com/artifact/com.iohao.net/run-one -->
+</properties>
+
+<dependencies>
+    <dependency>
+        <groupId>com.iohao.net</groupId>
+        <artifactId>run-one</artifactId>
+        <version>${ionet.version}</version>
+    </dependency>
+</dependencies>
+```
+
+### Local Build
+
+```bash
+git clone https://github.com/iohao/ionet.git
+cd ionet
+mvnd install
+```
+
+---
+
+## Core API
+
+### 1. Define Business Protocol
+
+```java
+@ProtobufClass
+public class HelloMessage {
+    public String name;
+}
+```
+
+### 2. Define Business Handler (Action)
+
+```java
+@ActionController(1)  // Controller route
+public class DemoAction {
+    @ActionMethod(0)  // Method route
+    private HelloMessage here(HelloMessage message) {
+        HelloMessage response = new HelloMessage();
+        response.name = message.name + ", I'm here";
+        return response;
+    }
+}
+```
+
+### 3. Start Server
+
+```java
+public class DemoApplication {
+    public static void main(String[] args) {
+        // Create external server (port 10100)
+        int port = ExternalGlobalConfig.externalPort;
+        var externalServer = ExternalMapper.builder(port).build();
+
+        // Start server
+        new RunOne()
+                .setAeron(new AeronLifecycleManager().getAeron())
+                .enableCenterServer()
+                .setExternalServer(externalServer)
+                .setLogicServerList(List.of(new DemoLogicServer()))
+                .startup();
+    }
+}
+```
+
+### 4. Define Error Codes
+
+```java
+public enum ErrorCode implements ErrorInformation {
+    nameChecked(100, "The name must be Jackson");
+
+    final int code;
+    final String message;
+
+    ErrorCode(int code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+
+    @Override public String getMessage() { return this.message; }
+    @Override public int getCode() { return this.code; }
+}
+```
+
+### 5. Assertions and Exceptions
+
+```java
+@ActionMethod(1)
+private HelloMessage jackson(HelloMessage message) {
+    ErrorCode.nameChecked.assertTrue("Jackson".equals(message.name));
+    message.name = "Hello, " + message.name;
+    return message;
+}
+```
+
+### 6. Broadcast Communication
+
+```java
+@ActionMethod(3)
+private void triggerBroadcast() {
+    var communication = CommunicationKit.getCommunication();
+    var message = new HelloMessage();
+    message.name = "broadcast message";
+    communication.broadcastMulticast(DemoCmd.listenData, message);
+}
+```
+
+### 7. Simulated Client Test
+
+```java
+public class DemoClient {
+    public static void main() {
+        new ClientRunOne()
+                .setInputCommandRegions(List.of(new DemoRegion()))
+                .startup();
+    }
+
+    static class DemoRegion extends AbstractInputCommandRegion {
+        @Override
+        public void initInputCommand() {
+            this.setCmd(DemoCmd.cmd, "TestDemo");
+
+            ofCommand(DemoCmd.here).setTitle("here").setRequestData(() -> {
+                HelloMessage msg = new HelloMessage();
+                msg.name = "test";
+                return msg;
+            }).callback(result -> {
+                HelloMessage value = result.getValue(HelloMessage.class);
+                System.out.println(value);
+            });
+        }
+    }
+}
+```
+
+### 8. Spring Integration (4 Lines of Code)
+
+**Add dependency:**
+```xml
+<dependency>
+    <groupId>com.iohao.net</groupId>
+    <artifactId>extension-spring</artifactId>
+    <version>${ionet.version}</version>
+</dependency>
+```
+
+**Bootstrap class (4 key lines):**
+```java
+@SpringBootApplication
+public class OneApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(OneApplication.class, args);
+        new RunOne()
+                ...
+                .startup();
+    }
+
+    @Bean
+    public ActionFactoryBeanForSpring actionFactoryBean() {
+        return new ActionFactoryBeanForSpring();
+    }
+}
+```
+
+**Action class with Spring injection:**
+```java
+@Component
+@ActionController(MyCmd.cmd)
+public class MyAction {
+    final MyService service;
+
+    private MyAction(MyService service) {
+        this.service = service;
+    }
+
+    @ActionMethod(MyCmd.getTime)
+    private String getTime() {
+        return service.getTime();
+    }
+}
+
+@Service
+public class MyService {
+    public String getTime() {
+        return LocalDateTime.now().toString();
+    }
+}
+```
+
+### 9. Inter-Server Communication - Send (request/void)
+
+Send is for internal requests without response, async invocation.
+
+```java
+@ActionController(SendCmd.cmd)
+public class SendAction {
+    private Communication communication() {
+        return CommunicationKit.getCommunication();
+    }
+
+    // Send empty data
+    @ActionMethod(SendCmd.sendEmpty)
+    private boolean sendEmpty() {
+        var cmdInfo = InternalCmd.of(InternalCmd.sendEmptyAction);
+        communication().send(cmdInfo);
+        return true;
+    }
+
+    // Send object
+    @ActionMethod(SendCmd.sendObject)
+    private boolean sendObject() {
+        var cmdInfo = InternalCmd.of(InternalCmd.sendObjectAction);
+        var data = new AuthorMessage();
+        data.authorName = "Joker";
+        communication().send(cmdInfo, data);
+        return true;
+    }
+
+    // Send list
+    @ActionMethod(SendCmd.sendObjectList)
+    private boolean sendObjectList() {
+        var cmdInfo = InternalCmd.of(InternalCmd.sendObjectListAction);
+        var author1 = new AuthorMessage();
+        author1.authorName = "David Myers";
+        var author2 = new AuthorMessage();
+        author2.authorName = "Gustave Le Bon";
+        List<AuthorMessage> dataList = List.of(author1, author2);
+        communication().send(cmdInfo, dataList);
+        return true;
+    }
+}
+```
+
+### 10. Inter-Server Communication - Call (request/response)
+
+Call is for internal requests with response, supports sync and async callbacks.
+
+```java
+@ActionController(CallCmd.cmd)
+public class CallAction {
+    private Communication communication() {
+        return CommunicationKit.getCommunication();
+    }
+
+    // Sync call
+    @ActionMethod(CallCmd.callObject)
+    private BookMessage callObject() {
+        var cmdInfo = InternalCmd.of(InternalCmd.objectAction);
+        var data = new AuthorMessage();
+        var response = communication().call(cmdInfo, data);
+        return response.getValue(BookMessage.class);
+    }
+
+    // Async callback
+    @ActionMethod(CallCmd.callObjectAsync)
+    private void callObjectAsync() {
+        var cmdInfo = InternalCmd.of(InternalCmd.objectAction);
+        var data = new AuthorMessage();
+        communication().callAsync(cmdInfo, data, response -> {
+            BookMessage book = response.getValue(BookMessage.class);
+            log.info("{}", book);
+        });
+    }
+
+    // Call and return list
+    @ActionMethod(CallCmd.callObjectList)
+    private List<BookMessage> callObjectList() {
+        var cmdInfo = InternalCmd.of(InternalCmd.objectListAction);
+        var data = new AuthorMessage();
+        var response = communication().call(cmdInfo, data);
+        return response.listValue(BookMessage.class);
+    }
+}
+```
+
+### 11. Broadcast Communication - broadcastUser (Single User)
+
+```java
+@ActionController(BroadcastCmd.cmd)
+public class BroadcastAction {
+    @ActionMethod(triggerBroadcastUser)
+    private void triggerBroadcastUser(long userId) {
+        var communication = CommunicationKit.getCommunication();
+
+        // Broadcast to specific user
+        var dataObject = new BookMessage();
+        dataObject.authorName = "ionet";
+        dataObject.bookName = "book-1";
+        communication.broadcastUser(userId, BroadcastCmd.broadcastUserObject, dataObject);
+
+        // Broadcast list
+        List<BookMessage> dataList = List.of(dataObject);
+        communication.broadcastUser(userId, BroadcastCmd.broadcastUserObjectList, dataList);
+    }
+}
+```
+
+### 12. Broadcast Communication - broadcastUsers (Multiple Users)
+
+```java
+@ActionController(BroadcastCmd.cmd)
+public class BroadcastAction {
+    @ActionMethod(triggerBroadcastUsers)
+    private void triggerBroadcastUsers(List<Long> userIdList) {
+        var communication = CommunicationKit.getCommunication();
+
+        var dataObject = new BookMessage();
+        dataObject.authorName = "ionet";
+        communication.broadcastUsers(userIdList, BroadcastCmd.broadcastUsersObject, dataObject);
+    }
+}
+```
+
+### 13. Broadcast Communication - broadcastMulticast (Global Broadcast)
+
+```java
+@ActionController(BroadcastCmd.cmd)
+public class BroadcastAction {
+    @ActionMethod(triggerBroadcastMulticast)
+    private void triggerBroadcastMulticast() {
+        var communication = CommunicationKit.getCommunication();
+
+        // Global broadcast announcement
+        var dataObject = new BookMessage();
+        dataObject.authorName = "ionet";
+        communication.broadcastMulticast(BroadcastCmd.broadcastMulticastObject, dataObject);
+    }
+}
+```
+
+### 14. EventBus Distributed Event Bus (Enterprise)
+
+Lightweight event communication across services via EventBus.
+
+```java
+@ActionController(EventBusCmd.cmd)
+public class EventBusAction {
+    @ActionMethod(EventBusCmd.fire)
+    private boolean fire(FlowContext flowContext) {
+        long userId = flowContext.getUserId();
+        var message = UserLoginEventMessage.of(userId);
+        flowContext.fire(message);  // Broadcast to all logic servers
+        return true;
+    }
+
+    @ActionMethod(EventBusCmd.fireAny)
+    private boolean fireAny(FlowContext flowContext) {
+        long userId = flowContext.getUserId();
+        var message = UserLoginEventMessage.of(userId);
+        flowContext.fireAny(message);  // Random logic server responds
+        return true;
+    }
+
+    @ActionMethod(EventBusCmd.fireMe)
+    private boolean fireMe(FlowContext flowContext) {
+        long userId = flowContext.getUserId();
+        var message = UserLoginEventMessage.of(userId);
+        flowContext.fireMe(message);  // Only to current logic server
+        return true;
+    }
+}
+```
+
+### 15. CallCollect Multi-Server Result Collection (Enterprise)
+
+Collect results from multiple same-type logic servers.
+
+```java
+@ActionController(CallCollectCmd.cmd)
+public class CallCollectAction {
+    @ActionMethod(CallCollectCmd.callCollectObject)
+    private List<BookMessage> callObject() {
+        var cmdInfo = InternalCmd.of(InternalCmd.objectAction);
+        var data = new AuthorMessage();
+
+        // Sync call collect results
+        var responseCollect = communication().callCollect(cmdInfo, data);
+        List<Response> responseList = responseCollect.getResponseList();
+        return responseList.stream()
+                .map(response -> response.getValue(BookMessage.class))
+                .toList();
+    }
+
+    @ActionMethod(CallCollectCmd.callCollectObjectAsync)
+    private void callObjectAsync() {
+        var cmdInfo = InternalCmd.of(InternalCmd.objectAction);
+        var data = new AuthorMessage();
+
+        // Async callback collect results
+        communication().callCollectAsync(cmdInfo, data, responseCollect -> {
+            List<Response> responseList = responseCollect.getResponseList();
+            for (Response response : responseList) {
+                log.info("{}", response.getValue(BookMessage.class));
+            }
+        });
+    }
+}
+```
+
+---
+
+## Common Commands
+
+```bash
+# Package
+mvn clean package
+
+# Run
+java \
+  --add-opens java.base/jdk.internal.misc=ALL-UNNAMED \
+  --enable-native-access=ALL-UNNAMED \
+  -jar target/your-app.jar
+```
+
+---
+
+## Related Links
+
+- GitHub: https://github.com/iohao/ionet
+- Javadoc: https://iohao.github.io/apidocs/index.html
+- Example Source: https://github.com/iohao/ionet-examples
